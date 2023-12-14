@@ -24,3 +24,11 @@ qualimap rnaseq -bam ${INPUT_PATH}/STAR_output/${SAMPLE}_STAR/LTT23_GG01_sorted.
                 -s --java-mem-size=56G
 
 done
+
+featureCounts -T 56 
+              -a ~/Project/Reference/Mmus/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.gtf 
+              -o ~/Project/nx107/featureCounts_output/bulkCML_GG_count_C2.tsv \
+		  ~/Project/nx107/STAR_output/LTT23_GG01_STARAligned.out.sam \
+		  ~/Project/nx107/STAR_output/LTT23_GG03_STARAligned.out.sam \
+		  ~/Project/nx107/STAR_output/LTT23_GG05_STARAligned.out.sam \
+		  ~/Project/nx107/STAR_output/LTT23_GG06_STARAligned.out.sam
