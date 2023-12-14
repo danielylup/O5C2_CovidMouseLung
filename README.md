@@ -12,3 +12,9 @@ R:
 - [ ] [DESeq2](bioconductor.org/packages/release/bioc/html/DESeq2.html)
 - [ ] [ggplot2](cran.r-project.org/web/packages/ggplot2/index.html)
 - [ ] [EnhancedVolcano](bioconductor.org/packages/release/bioc/html/EnhancedVolcano.html)
+- [ ] [goseq](bioconductor.org/packages/release/bioc/html/goseq.html)
+- [ ] [patchwork](cran.r-project.org/web/packages/patchwork/index.html)
+
+There are main 2 scripts in this repo:
+1. **fastp_STAR_qualimap.sh** - shell script to (1) quality check using *fastp*, (2) mapping to reference genome using *STAR*, and (3) check for mapping metrics using *qualimap*.
+2. **DESeq2_plot.R** - R scruipt to conduct differential gene expression (DGE) analysis using *DESeq2*, and plot the main figures related to DGE analysis. 
