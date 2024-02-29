@@ -31,12 +31,12 @@ bulkCML_GG_res_C2 <- results(bulkCML_GG_dds_C2, contrast = c("Treatment", "O5C2"
 
 #####Plot figure#####
 
-#Figure 6f
+##Figure 6f
 png("./Publication_figure/Fig6f_volplot.png", units="in", width=5, height=6, res=600)
 EnhancedVolcano(bulkCML_GG_res_C2, lab = rownames(bulkCML_GG_res_C2), x = 'log2FoldChange', y = 'pvalue', title = '', axisLabSize = 18, pCutoff = 0.01, subtitle = '', subtitleLabSize = 0.1)
 dev.off()
 
-#Figure 6g
+##Figure 6g
 bulkCML_GG_res_C2_DF <- as.data.frame(bulkCML_GG_res_C2)
 bulkCML_GG_res_C2_DF$significant <- ifelse(bulkCML_GG_res_C2_DF$padj < .05, "Significant", NA)
 bulkCML_GG_res_C2_DF$Gene <- rownames(bulkCML_GG_res_C2_DF)
@@ -54,7 +54,7 @@ png("./Publication_figure/Fig6g_DEGheatmap_.png", units = "in", height = 15, wid
 pheatmap(bulkCML_GG_heatmap_matrix_C2, cluster_rows = T, show_rownames = T, annotation = bulkCML_GG_sample_C2, fontsize = 7, cutree_rows = 2, scale = )
 dev.off()
 
-#Figure 6h
+##Figure 6h
 upreg_C2_genes <- bulkCML_GG_res_C2$padj < 0.05 & bulkCML_GG_res_C2$log2FoldChange > 0 & !is.na(bulkCML_GG_res_C2$padj)
 names(upreg_C2_genes) <- rownames(bulkCML_GG_res_C2)
 Mmus_bias_upC2 <- Mmus_bias[names(upreg_C2_genes)]
@@ -67,24 +67,37 @@ Mmus_bias_downC2 <- Mmus_bias[names(downreg_C2_genes)]
 pwf_downC2 <- nullp(downreg_C2_genes, bias.data = as.numeric(Mmus_bias_downC2))
 GOres_downC2 <- goseq(pwf_downC2, "mm9", "geneSymbol", test.cats = "GO:BP")
 
+#break long GO term into multiple lines
+for(i in 1:nrow(GOres_upC2)){
+  GOres_upC2$term[i] <- paste(strwrap(GOres_upC2$term[i], 25), collapse = "\n")
+}
+
+for(i in 1:nrow(GOres_downC2)){
+  GOres_downC2$term[i] <- paste(strwrap(GOres_downC2$term[i], 25), collapse = "\n")
+}
+
+#Bubble plot for enriched GO terms
 GOplot_upC2 <- GOres_upC2 %>% 
-  top_n(20, wt=-over_represented_pvalue) %>% 
-  mutate(hitsPerc=numDEInCat*100/numInCat) %>% 
-  ggplot(aes(x=hitsPerc, y=term, colour=over_represented_pvalue, size=numDEInCat)) +
-    ggtitle("Enriched GO term of up-regulated genes") +
+    top_n(20, wt=-over_represented_pvalue) %>% 
+    mutate(hitsPerc=numDEInCat*100/numInCat) %>% 
+    ggplot(aes(x=hitsPerc, y=reorder(term, -over_represented_pvalue), colour=over_represented_pvalue, size=numDEInCat)) +
+    ggtitle("Up-regulated genes") +
     geom_point() +
     expand_limits(x=0) +
-    labs(x="Gene ratio", y="Biological process GO term", colour="p value", size="Count")
+    labs(x="Gene ratio", y="Biological process GO term", colour="p value", size="Count") +
+    theme(legend.position = "bottom", legend.box = "vertical", text = element_text(family = "sans"))
 
 GOplot_downC2 <- GOres_downC2 %>% 
-  top_n(20, wt=-over_represented_pvalue) %>% 
-  mutate(hitsPerc=numDEInCat*100/numInCat) %>% 
-  ggplot(aes(x=hitsPerc, y=term, colour=over_represented_pvalue, size=numDEInCat)) +
-    ggtitle("Enriched GO term of down-regulated genes") +
+    top_n(20, wt=-over_represented_pvalue) %>% 
+    mutate(hitsPerc=numDEInCat*100/numInCat) %>% 
+    ggplot(aes(x=hitsPerc, y=reorder(term, -over_represented_pvalue), colour=over_represented_pvalue, size=numDEInCat)) +
+    ggtitle("Down-regulated genes") +
     geom_point() +
     expand_limits(x=0) +
-    labs(x="Gene ratio", y="Biological process GO term", colour="p value", size="Count")
+    scale_y_discrete(position = "right") +
+    labs(x="Gene ratio", y="", colour="p value", size="Count") +
+    theme(legend.position = "bottom", legend.box = "vertical", text = element_text(family = "sans"))
 
-png("./Publication_figure/Fig6h_GOplot_.png", units = "in", height = 8, width = 12, res = 600)
+png("./Publication_figure/Fig6h_GOplot.png", units = "in", height = 8, width = 12, res = 600)
 GOplot_upC2 | GOplot_downC2
 dev.off()
