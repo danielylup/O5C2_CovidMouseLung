@@ -51,7 +51,7 @@ rownames(bulkCML_GG_heatmap_matrix_C2) <- bulkCML_GG_heatmap_matrix_C2$Gene
 bulkCML_GG_heatmap_matrix_C2$Gene <- NULL
 
 png("./Publication_figure/Fig6g_DEGheatmap_.png", units = "in", height = 15, width = 5, res = 600)
-pheatmap(bulkCML_GG_heatmap_matrix_C2, cluster_rows = T, show_rownames = T, annotation = bulkCML_GG_sample_C2, fontsize = 7, cutree_rows = 2, scale = )
+pheatmap(bulkCML_GG_heatmap_matrix_C2, cluster_rows = T, show_rownames = T, annotation = bulkCML_GG_sample_C2, fontsize = 8, fontsize_row = 3,cutree_rows = 2, scale = "row", treeheight_row = 20, treeheight_col = 20)
 dev.off()
 
 ##Figure 6h
@@ -69,11 +69,11 @@ GOres_downC2 <- goseq(pwf_downC2, "mm9", "geneSymbol", test.cats = "GO:BP")
 
 #break long GO term into multiple lines
 for(i in 1:nrow(GOres_upC2)){
-  GOres_upC2$term[i] <- paste(strwrap(GOres_upC2$term[i], 25), collapse = "\n")
+  GOres_upC2$term[i] <- paste(strwrap(GOres_upC2$term[i], 50), collapse = "\n")
 }
 
 for(i in 1:nrow(GOres_downC2)){
-  GOres_downC2$term[i] <- paste(strwrap(GOres_downC2$term[i], 25), collapse = "\n")
+  GOres_downC2$term[i] <- paste(strwrap(GOres_downC2$term[i], 50), collapse = "\n")
 }
 
 #Bubble plot for enriched GO terms
